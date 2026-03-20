@@ -1,0 +1,5 @@
+{
+  "name": "Sansncar",
+  "description": "A sleek, dark-themed ride booking application.",
+  "requestFramePermissions": ["geolocation"]
+}

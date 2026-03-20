@@ -1,0 +1,55 @@
+{
+  "entities": {
+    "promoBanner": {
+      "title": "Promo Banner",
+      "description": "A promotional banner shown on the home page.",
+      "type": "object",
+      "properties": {
+        "text": { "type": "string", "description": "The text content of the banner." },
+        "imageUrl": { "type": "string", "description": "The URL of the banner image." },
+        "link": { "type": "string", "description": "The link the banner points to." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "When the banner was created." }
+      },
+      "required": ["text", "createdAt"]
+    },
+    "booking": {
+      "title": "Booking",
+      "description": "A ride booking record.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "pickup": { "type": "string" },
+        "destination": { "type": "string" },
+        "vehicle": { "type": "string" },
+        "driverName": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "amount": { "type": "number" },
+        "userLocation": {
+          "type": "object",
+          "properties": {
+            "lat": { "type": "number" },
+            "lng": { "type": "number" }
+          }
+        },
+        "driverLocation": {
+          "type": "object",
+          "properties": {
+            "lat": { "type": "number" },
+            "lng": { "type": "number" }
+          }
+        }
+      },
+      "required": ["userId", "pickup", "destination", "vehicle", "driverName", "timestamp", "amount"]
+    }
+  },
+  "firestore": {
+    "/promoBanners/{bannerId}": {
+      "schema": { "$ref": "promoBanner" },
+      "description": "Collection of promotional banners."
+    },
+    "/bookings/{bookingId}": {
+      "schema": { "$ref": "booking" },
+      "description": "Collection of ride bookings."
+    }
+  }
+}

@@ -1,0 +1,41 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && 
+        (request.auth.token.email == "sloudsan@gmail.com");
+    }
+
+    match /promoBanners/{bannerId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /users/{userId} {
+      allow read, write: if isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidBooking(data) {
+      return data.userId is string &&
+             data.pickup is string && data.pickup.size() > 0 && data.pickup.size() < 100 &&
+             data.destination is string && data.destination.size() > 0 && data.destination.size() < 100 &&
+             data.vehicle is string &&
+             data.driverName is string &&
+             data.timestamp is timestamp &&
+             data.amount is number && data.amount > 0 &&
+             (!('userLocation' in data) || (data.userLocation is map && data.userLocation.lat is number && data.userLocation.lng is number)) &&
+             (!('driverLocation' in data) || (data.driverLocation is map && data.driverLocation.lat is number && data.driverLocation.lng is number));
+    }
+
+    match /bookings/{bookingId} {
+      allow read: if isAuthenticated() && request.auth.uid == resource.data.userId;
+      allow create: if isAuthenticated() && request.auth.uid == request.resource.data.userId && isValidBooking(request.resource.data);
+      allow update: if isAuthenticated() && request.auth.uid == resource.data.userId && isValidBooking(request.resource.data);
+    }
+  }
+}
